@@ -2,7 +2,7 @@
  * react-native-swiper
  * @author leecade<leecade@163.com>
  */
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
   Text,
@@ -214,23 +214,21 @@ export default class extends Component {
     this.loopJumpTimer && clearTimeout(this.loopJumpTimer)
   }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
+  componentDidUpdate(prevProps, prevState) {
     // If the index has changed, we notify the parent via the onIndexChanged callback
-    if (this.state.index !== nextState.index)
-      this.props.onIndexChanged(nextState.index)
-  }
+    if (this.state.index !== prevState.index)
+      this.props.onIndexChanged(this.state.index)
 
-  componentDidUpdate(prevProps) {
     // If autoplay props updated to true, autoplay immediately
     if (this.props.autoplay && !prevProps.autoplay) {
       this.autoplay()
     }
     if (this.props.children !== prevProps.children) {
       if (this.props.loadMinimal && Platform.OS === 'ios') {
-        this.setState({ ...this.props, index: this.state.index })
+        this.setState({...this.props, index: this.state.index})
       } else {
         this.setState(
-          this.initState({ ...this.props, index: this.state.index }, true)
+          this.initState({...this.props, index: this.state.index}, true)
         )
       }
     }
@@ -238,7 +236,7 @@ export default class extends Component {
 
   initState(props, updateIndex = false) {
     // set the current state
-    const state = this.state || { width: 0, height: 0, offset: { x: 0, y: 0 } }
+    const state = this.state || {width: 0, height: 0, offset: {x: 0, y: 0}}
 
     const initState = {
       autoplayEnd: false,
@@ -263,7 +261,7 @@ export default class extends Component {
     }
 
     // Default: horizontal
-    const { width, height } = Dimensions.get('window')
+    const {width, height} = Dimensions.get('window')
 
     initState.dir = props.horizontal === false ? 'y' : 'x'
 
@@ -299,9 +297,9 @@ export default class extends Component {
   }
 
   onLayout = event => {
-    const { width, height } = event.nativeEvent.layout
+    const {width, height} = event.nativeEvent.layout
     const offset = (this.internals.offset = {})
-    const state = { width, height }
+    const state = {width, height}
 
     if (this.state.total > 1) {
       let setup = this.state.index
@@ -321,10 +319,10 @@ export default class extends Component {
     // related to https://github.com/leecade/react-native-swiper/issues/570
     // contentOffset is not working in react 0.48.x so we need to use scrollTo
     // to emulate offset.
-    if(this.state.total > 1) {
-      this.scrollView.scrollTo({ ...offset, animated: false })
+    if (this.state.total > 1) {
+      this.scrollView.scrollTo({...offset, animated: false})
     }
-	
+
     if (this.initialRender) {
       this.initialRender = false
     }
@@ -344,21 +342,21 @@ export default class extends Component {
           if (this.state.index === 0) {
             scrollView.scrollTo(
               this.props.horizontal === false
-                ? { x: 0, y: this.state.height, animated: false }
-                : { x: this.state.width, y: 0, animated: false }
+                ? {x: 0, y: this.state.height, animated: false}
+                : {x: this.state.width, y: 0, animated: false}
             )
           } else if (this.state.index === this.state.total - 1) {
             this.props.horizontal === false
               ? this.scrollView.scrollTo({
-                  x: 0,
-                  y: this.state.height * this.state.total,
-                  animated: false
-                })
+                x: 0,
+                y: this.state.height * this.state.total,
+                animated: false
+              })
               : this.scrollView.scrollTo({
-                  x: this.state.width * this.state.total,
-                  y: 0,
-                  animated: false
-                })
+                x: this.state.width * this.state.total,
+                y: 0,
+                animated: false
+              })
           }
         }
       },
@@ -388,7 +386,7 @@ export default class extends Component {
           ? this.state.index === this.state.total - 1
           : this.state.index === 0)
       )
-        return this.setState({ autoplayEnd: true })
+        return this.setState({autoplayEnd: true})
 
       this.scrollBy(this.props.autoplayDirection ? 1 : -1)
     }, this.props.autoplayTimeout * 1000)
@@ -440,10 +438,10 @@ export default class extends Component {
    * @param {object} e native event
    */
   onScrollEndDrag = e => {
-    const { contentOffset } = e.nativeEvent
-    const { horizontal } = this.props
-    const { children, index } = this.state
-    const { offset } = this.internals
+    const {contentOffset} = e.nativeEvent
+    const {horizontal} = this.props
+    const {children, index} = this.state
+    const {offset} = this.internals
     const previousOffset = horizontal ? offset.x : offset.y
     const newOffset = horizontal ? contentOffset.x : contentOffset.y
 
@@ -505,10 +503,10 @@ export default class extends Component {
       // so we increment it by 1 then immediately set it to what it should be,
       // after render.
       if (offset[dir] === this.internals.offset[dir]) {
-        newState.offset = { x: 0, y: 0 }
+        newState.offset = {x: 0, y: 0}
         newState.offset[dir] = offset[dir] + 1
         this.setState(newState, () => {
-          this.setState({ offset: offset }, cb)
+          this.setState({offset: offset}, cb)
         })
       } else {
         newState.offset = offset
@@ -534,7 +532,7 @@ export default class extends Component {
     if (state.dir === 'x') x = diff * state.width
     if (state.dir === 'y') y = diff * state.height
 
-    this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+    this.scrollView && this.scrollView.scrollTo({x, y, animated})
 
     // update scroll state
     this.internals.isScrolling = true
@@ -576,7 +574,7 @@ export default class extends Component {
     if (state.dir === 'x') x = diff * state.width
     if (state.dir === 'y') y = diff * state.height
 
-    this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+    this.scrollView && this.scrollView.scrollTo({x, y, animated})
 
     // update scroll state
     this.internals.isScrolling = true
@@ -672,8 +670,8 @@ export default class extends Component {
     for (let i = 0; i < this.state.total; i++) {
       dots.push(
         i === this.state.index
-          ? React.cloneElement(ActiveDot, { key: i })
-          : React.cloneElement(Dot, { key: i })
+          ? React.cloneElement(ActiveDot, {key: i})
+          : React.cloneElement(Dot, {key: i})
       )
     }
 
@@ -791,7 +789,7 @@ export default class extends Component {
    * @return {object} react-dom
    */
   render() {
-    const { index, total, width, height, children } = this.state
+    const {index, total, width, height, children} = this.state
     const {
       containerStyle,
       loop,
@@ -807,7 +805,7 @@ export default class extends Component {
     const loopVal = loop ? 1 : 0
     let pages = []
 
-    const pageStyle = [{ width: width, height: height }, styles.slide]
+    const pageStyle = [{width: width, height: height}, styles.slide]
     const pageStyleLoading = {
       width,
       height,
